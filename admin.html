@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Панель администратора и модератора · КПРФ Кондинское отделение</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="icon" href="uploads/logo-kprf.png" type="image/png">
+</head>
+<body>
+
+  <header class="admin-header">
+    <div class="container admin-nav">
+      <a href="index.html" class="admin-logo">
+        <img src="uploads/logo-kprf.png" alt="КПРФ" class="admin-logo-img" width="46" height="46">
+        <div>
+          <div class="admin-title">Админ-панель · <span>Кондинское РК КПРФ</span></div>
+          <div class="admin-subtitle">Управление публикациями и премодерация комментариев · ХМАО — Югра</div>
+        </div>
+      </a>
+
+      <div class="admin-header-actions">
+        <button type="button" id="adminThemeBtn" class="back-to-site-btn">
+          <span>Тёмная / Светлая тема</span>
+        </button>
+        <a href="index.html" class="back-to-site-btn">
+          <span>← Вернуться на сайт</span>
+        </a>
+        <button type="button" id="logoutBtn" class="back-to-site-btn logout-btn" style="display: none;">
+          <span>Выйти</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div id="loginOverlay" class="login-overlay" role="dialog" aria-modal="true" aria-labelledby="loginHeading">
+    <div class="login-box">
+      <div style="text-align: center; margin-bottom: 22px;">
+        <img src="uploads/logo-kprf.png" alt="КПРФ" style="width: 64px; height: 64px; border-radius: 12px; margin-bottom: 10px;">
+        <h2 id="loginHeading" style="font-family: var(--font-heading); font-size: 1.45rem; color: var(--text-primary);">Вход в панель управления</h2>
+        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px;">Кондинское районное отделение КПРФ</div>
+      </div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label class="form-label" for="adminUsername">Логин администратора</label>
+          <input type="text" id="adminUsername" class="form-input" required autocomplete="username" placeholder="Введите логин">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label class="form-label" for="adminPassword">Пароль</label>
+          <input type="password" id="adminPassword" class="form-input" required autocomplete="current-password" placeholder="Введите пароль">
+        </div>
+
+        <div id="loginError" style="color: var(--red-primary); font-size: 0.88rem; margin-bottom: 14px; display: none; text-align: center; font-weight: 600;"></div>
+
+        <button type="submit" class="btn-primary" style="width: 100%;">
+          <span>Войти в систему</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <main class="container">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <div id="statTotalNews" class="stat-value">0</div>
+          <div class="stat-label">Всего новостей</div>
+        </div>
+      </div>
+
+      <div class="stat-card gold">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <div id="statPendingComments" class="stat-value">0</div>
+          <div class="stat-label">На модерации</div>
+        </div>
+        <div id="statPendingBadge" class="stat-badge" style="display: none;">Ожидают</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <div id="statApprovedComments" class="stat-value">0</div>
+          <div class="stat-label">Одобрено комментариев</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <div id="statTotalViews" class="stat-value">0</div>
+          <div class="stat-label">Просмотры статей</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-tabs" role="tablist">
+      <button type="button" class="admin-tab active" data-tab="tabComments" role="tab">
+        <span>Модерация комментариев</span>
+        <span id="tabPendingBadge" class="tab-badge">0</span>
+      </button>
+      <button type="button" class="admin-tab" data-tab="tabNews" role="tab">
+        <span>Управление новостями</span>
+      </button>
+      <button type="button" class="admin-tab" data-tab="tabCreate" role="tab">
+        <span>+ Создать публикацию</span>
+      </button>
+    </div>
+
+    <div id="tabComments" class="tab-pane active">
+      <div class="filter-row">
+        <div class="mod-filter-group">
+          <button type="button" class="mod-filter-btn active" data-mod-status="pending"><span class="filter-dot pending"></span>На модерации</button>
+          <button type="button" class="mod-filter-btn" data-mod-status="approved"><span class="filter-dot approved"></span>Одобренные</button>
+          <button type="button" class="mod-filter-btn" data-mod-status="rejected"><span class="filter-dot rejected"></span>Отклоненные</button>
+          <button type="button" class="mod-filter-btn" data-mod-status="all"><span class="filter-dot all"></span>Все комментарии</button>
+        </div>
+      </div>
+
+      <div id="commentsQueue" class="comments-queue-list"></div>
+    </div>
+
+    <div id="tabNews" class="tab-pane">
+      <div class="admin-news-table-wrap">
+        <table class="admin-news-table">
+          <thead>
+            <tr>
+              <th>Обложка</th>
+              <th>Заголовок и рубрика</th>
+              <th>Дата</th>
+              <th>Просмотры</th>
+              <th>Статус</th>
+              <th>Действия</th>
+            </tr>
+          </thead>
+          <tbody id="adminNewsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="tabCreate" class="tab-pane">
+      <div class="editor-card">
+        <h2 class="editor-heading">
+          <span id="editorTitlePrefix">Создание</span> новостной публикации
+        </h2>
+
+        <form id="newsEditorForm">
+          <input type="hidden" id="editNewsId">
+
+          <div class="form-group">
+            <label class="form-label" for="newsTitle">Заголовок статьи *</label>
+            <input type="text" id="newsTitle" class="form-input" placeholder="Введите заголовок публикации..." maxlength="300" required>
+          </div>
+
+          <div class="form-row-grid">
+            <div class="form-group">
+              <label class="form-label" for="newsCategory">Рубрика публикации *</label>
+              <select id="newsCategory" class="form-input" required>
+                <option value="Партийная жизнь">Партийная жизнь</option>
+                <option value="Социальная защита">Социальная защита</option>
+                <option value="Газета Правда">Газета Правда</option>
+                <option value="Экология ХМАО">Экология ХМАО</option>
+                <option value="История и идеология">История и идеология</option>
+                <option value="Красный контроль">Красный контроль</option>
+                <option value="Анонсы событий">Анонсы событий</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="newsDate">Дата публикации *</label>
+              <input type="date" id="newsDate" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="newsAuthor">Автор / подразделение *</label>
+              <input type="text" id="newsAuthor" class="form-input" value="Пресс-служба Кондинского РК КПРФ" maxlength="120" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Иллюстрация новости *</label>
+            <div class="image-upload-box" style="border: 2px dashed var(--border-strong); border-radius: var(--radius-md); padding: 18px; text-align: center; background: var(--bg-subtle); cursor: pointer;" onclick="document.getElementById('newsImageFile').click()">
+              <input type="file" id="newsImageFile" accept="image/png,image/jpeg,image/webp,image/gif" style="display: none;">
+              <input type="hidden" id="newsImage" value="uploads/news-1.jpg" required>
+              <div id="uploadPrompt">
+                <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">Нажмите для загрузки собственного изображения (JPG, PNG, WEBP)</div>
+                <div style="font-size: 0.82rem; color: var(--text-muted);">или выберите готовую обложку ниже</div>
+              </div>
+              <div id="uploadPreviewWrap" style="display: none; margin-top: 8px;">
+                <img id="uploadPreviewImg" src="uploads/news-1.jpg" alt="Превью" style="max-height: 160px; border-radius: var(--radius-sm); margin: 0 auto; display: block;">
+                <div style="font-size: 0.82rem; color: var(--red-primary); margin-top: 6px; font-weight: 600;">Нажмите, чтобы выбрать другой файл с компьютера</div>
+              </div>
+            </div>
+
+            <div style="margin-top: 10px;">
+              <div style="font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Быстрый выбор готовой обложки:</div>
+              <div id="materialsGrid" class="materials-grid"></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="newsSummary">Краткий анонс (для карточки) *</label>
+            <textarea id="newsSummary" class="form-textarea" style="min-height: 76px;" placeholder="Краткое описание сути публикации..." maxlength="1000" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Полный текст новости *</label>
+            <div class="wysiwyg-editor">
+              <div class="wysiwyg-toolbar" style="display: flex; gap: 6px; padding: 8px; background: var(--bg-subtle); border: 1px solid var(--border-strong); border-bottom: none; border-radius: var(--radius-md) var(--radius-md) 0 0; flex-wrap: wrap;">
+                <button type="button" class="wysiwyg-btn" onmousedown="event.preventDefault()" onclick="formatDoc('bold')"><b>B</b></button>
+                <button type="button" class="wysiwyg-btn" onmousedown="event.preventDefault()" onclick="formatDoc('italic')"><i>I</i></button>
+                <button type="button" class="wysiwyg-btn" onmousedown="event.preventDefault()" onclick="formatDoc('underline')"><u>U</u></button>
+                <button type="button" class="wysiwyg-btn" onmousedown="event.preventDefault()" onclick="formatHeading('<h3>')">Заголовок</button>
+                <button type="button" class="wysiwyg-btn" onmousedown="event.preventDefault()" onclick="formatHeading('<blockquote>')">«Цитата»</button>
+                <button type="button" class="wysiwyg-btn" onmousedown="event.preventDefault()" onclick="formatParagraph()">Абзац</button>
+                <button type="button" class="wysiwyg-btn" onmousedown="event.preventDefault()" onclick="formatDoc('insertUnorderedList')">• Список</button>
+                <button type="button" class="wysiwyg-btn" onmousedown="event.preventDefault()" onclick="clearEditorFormat()">Очистить формат</button>
+              </div>
+              <div id="newsContentEditor" class="wysiwyg-content" contenteditable="true" style="min-height: 220px; padding: 14px; border: 1px solid var(--border-strong); border-radius: 0 0 var(--radius-md) var(--radius-md); background: var(--bg-card); font-size: 0.95rem; line-height: 1.65; color: var(--text-primary); outline: none;"></div>
+              <input type="hidden" id="newsContent">
+            </div>
+          </div>
+
+          <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin: 18px 0;">
+            <input type="checkbox" id="newsPinned" style="width: 18px; height: 18px; accent-color: var(--red-primary); cursor: pointer;">
+            <label for="newsPinned" style="font-weight: 600; color: var(--text-primary); cursor: pointer;">Закрепить публикацию вверху главной ленты</label>
+          </div>
+
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <button type="submit" class="btn-primary">
+              <span id="saveNewsBtnText">Опубликовать новость</span>
+            </button>
+            <button type="button" id="cancelEditBtn" class="btn-secondary" style="display: none;">
+              Отменить редактирование
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+  <script src="js/admin.js"></script>
+</body>
+</html>
